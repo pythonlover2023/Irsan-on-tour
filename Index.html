@@ -2,69 +2,28 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>IrsanAI Travel Portal</title>
-  <style>
-    body {
-      background: linear-gradient(to right, #00c6ff, #0072ff);
-      color: white;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding-top: 100px;
-    }
-    button, input {
-      margin: 10px;
-      padding: 10px;
-      font-size: 18px;
-      border-radius: 8px;
-      border: none;
-    }
-    .btn {
-      background-color: #ffffff;
-      color: #0072ff;
-      cursor: pointer;
-    }
-  </style>
+  <title>Willkommen beim Bosna-Travel-Tracker</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <h1>Willkommen im IrsanAI Travel Portal</h1>
-
-  <h2>Wer bist du?</h2>
-
-  <button class="btn" onclick="showLogin('freundin')">Freundin</button>
-  <button class="btn" onclick="showLogin('freund')">Bester Freund</button>
-  <button class="btn" onclick="showLogin('admin')">Admin</button>
-  <button class="btn" onclick="feind()">Feind</button>
-
-  <div id="loginDiv" style="margin-top:20px;"></div>
+  <h1>Willkommen!</h1>
+  <p>Wer bist du?</p>
+  
+  <input id="username" type="text" placeholder="Dein Name">
+  <button onclick="login()">Login</button>
 
   <script>
-    function showLogin(type) {
-      let html = `
-        <input type="password" id="password" placeholder="Passwort eingeben...">
-        <button onclick="login('${type}')">Login</button>
-      `;
-      document.getElementById("loginDiv").innerHTML = html;
-    }
+    function login() {
+      const username = document.getElementById('username').value.toLowerCase();
 
-    function login(type) {
-      const password = document.getElementById("password").value.trim().toLowerCase();
-
-      if (type === 'freundin' && password.includes('michelle')) {
-        window.location.href = "live.html";
-      } else if (type === 'freund' && password.includes('daniel')) {
-        window.location.href = "live.html";
-      } else if (type === 'admin' && password.includes('bosna')) {
-        window.location.href = "admin.html";
+      if (username.includes('irsan')) {
+        window.location.href = 'admin.html';
+      } else if (username.includes('daniel') || username.includes('michele')) {
+        window.location.href = 'live.html';
       } else {
-        window.location.href = "feind.html";
+        window.location.href = 'feind.html';
       }
     }
-
-    function feind() {
-      window.location.href = "feind.html";
-    }
   </script>
-
 </body>
 </html>
