@@ -1,29 +1,46 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>Willkommen beim Bosna-Travel-Tracker</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IrsanAI Travel Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/854/854878.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 <body>
-  <h1>Willkommen!</h1>
-  <p>Wer bist du?</p>
-  
-  <input id="username" type="text" placeholder="Dein Name">
-  <button onclick="login()">Login</button>
 
-  <script>
-    function login() {
-      const username = document.getElementById('username').value.toLowerCase();
+<div id="login-screen" class="screen active">
+    <h2>Willkommen bei IrsanAI Travel Tracker</h2>
+    <input type="text" id="username" placeholder="Dein Name">
+    <input type="password" id="password" placeholder="Passwort">
+    <button onclick="login()">Einloggen</button>
+</div>
 
-      if (username.includes('irsan')) {
-        window.location.href = 'admin.html';
-      } else if (username.includes('daniel') || username.includes('michele')) {
-        window.location.href = 'live.html';
-      } else {
-        window.location.href = 'feind.html';
-      }
-    }
-  </script>
+<div id="dashboard" class="screen">
+    <h2>Travel Dashboard</h2>
+
+    <div class="controls">
+        <label for="vehicle">Fahrzeug auswählen:</label>
+        <select id="vehicle">
+            <option value="bus">Bus</option>
+            <option value="auto">Auto</option>
+            <option value="bahn">Bahn</option>
+            <option value="flugzeug">Flugzeug</option>
+        </select>
+        <button onclick="updateGPS()">GPS aktualisieren</button>
+        <div id="loading-bar"></div>
+    </div>
+
+    <div id="map"></div>
+
+    <h3>Checkpoint Historie</h3>
+    <div id="history"></div>
+
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="script.js"></script>
+
 </body>
 </html>
