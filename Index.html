@@ -3,44 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bruda on Tour</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(#74ebd5, #ACB6E5);
-            color: #333;
-            text-align: center;
-            padding: 50px;
-        }
-        .card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            padding: 30px;
-            display: inline-block;
-            margin-top: 20px;
-        }
-        .title {
-            font-size: 28px;
-            margin-bottom: 20px;
-        }
-        .info {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-        .small {
-            font-size: 14px;
-            color: #666;
-        }
-    </style>
+    <title>Irsans Abenteuer-Tracker</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="card">
-        <div class="title">Bruda ist unterwegs!</div>
-        <div class="info"><strong>Aktueller Standort:</strong> 51.260081, 13.722597</div>
-        <div class="info"><strong>Letztes Update:</strong> 26.04.2025, 18:05 Uhr</div>
-        <div class="info"><strong>Status:</strong> Alles chillig, noch im Bus!</div>
-        <div class="small">(Wird automatisch aktualisiert, sobald Bruda neue Koordinaten schickt)</div>
-    </div>
+
+<div class="login-container">
+    <h1>Willkommen auf Irsans Mission!</h1>
+    <p>Wer bist du?</p>
+    <button onclick="login('freundin')">Freundin</button>
+    <button onclick="login('besterfreund')">Bester Freund</button>
+    <button onclick="login('feind')">Feind</button>
+    <button onclick="login('admin')">Irsan</button>
+</div>
+
+<div id="app" class="hidden">
+    <h2 id="welcome"></h2>
+    <div id="content"></div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
