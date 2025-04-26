@@ -1,43 +1,65 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brudaaa Tracker</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>IrsanAI Travel Login</title>
+  <style>
+    body { 
+      font-family: Arial, sans-serif; 
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      text-align: center; 
+      padding-top: 100px;
+    }
+    input, button { 
+      padding: 10px; 
+      margin: 10px; 
+      font-size: 16px;
+    }
+  </style>
 </head>
 <body>
 
-    <header>
-        <h1>Brudaaa Live Standort</h1>
-        <p>Letztes Update: <span id="lastUpdate">Noch kein Update</span></p>
-    </header>
+  <h1>Willkommen beim IrsanAI Travel-Tracker</h1>
+  <input type="text" id="usernameInput" placeholder="Dein Name bitte...">
+  <button onclick="checkLogin()">Login</button>
 
-    <main>
-        <section id="loginSection">
-            <h2>Wer bist du?</h2>
-            <input type="text" id="nameInput" placeholder="Gib deinen Namen ein...">
-            <button onclick="login()">Einloggen</button>
-        </section>
+  <p id="statusMessage"></p>
 
-        <section id="mapSection" style="display:none;">
-            <h2>Aktuelle Position</h2>
-            <div id="map" style="height: 400px; width: 100%; background: #ccc;">Hier kommt die Karte</div>
-            <p id="statusMessage"></p>
-        </section>
+  <script>
+    function checkLogin() {
+      const input = document.getElementById("usernameInput").value.trim().toLowerCase();
+      const status = document.getElementById("statusMessage");
 
-        <section id="commentSection" style="display:none;">
-            <h2>Kommentare</h2>
-            <textarea id="commentInput" placeholder="Kommentar schreiben..."></textarea>
-            <button onclick="submitComment()">Absenden</button>
-            <div id="comments"></div>
-        </section>
-    </main>
+      if (input.includes("michelle")) {
+        status.innerHTML = "Freundin erkannt! Willkommen, Michelle!";
+        status.style.color = "pink";
+        // Hier kannst du weiterleiten auf Freundinnen-Seite etc.
+      } else if (input.includes("daniel")) {
+        status.innerHTML = "Bester Freund erkannt! Willkommen, Daniel!";
+        status.style.color = "blue";
+        // Hier kannst du Daniel-Funktionalität triggern
+      } else if (input.includes("irsan") || input.includes("bosna")) {
+        status.innerHTML = "Admin erkannt! Willkommen, Irsan!";
+        status.style.color = "green";
+        // Hier Admin-Zugang aufbauen
+      } else {
+        status.innerHTML = "Feind erkannt! Zugriff wird protokolliert...";
+        status.style.color = "red";
+        // Hier IP-Logging vorbereiten
+        logFeind();
+      }
+    }
 
-    <footer>
-        <p>Brudaaa Bus Tour 2025</p>
-    </footer>
+    function logFeind() {
+      const feindInfo = {
+        timestamp: new Date().toISOString(),
+        userAgent: navigator.userAgent,
+        // IP könnten wir z.B. extern mit einem kleinen Service holen später
+      };
+      console.log("Feind-Log:", feindInfo);
+      // Optional: feindInfo an ein kleines Server-Script schicken oder verschlüsselt speichern
+    }
+  </script>
 
-<script src="script.js"></script>
 </body>
 </html>
