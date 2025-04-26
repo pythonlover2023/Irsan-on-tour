@@ -2,62 +2,67 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>IrsanAI Travel Login</title>
+  <title>IrsanAI Travel Portal</title>
   <style>
-    body { 
-      font-family: Arial, sans-serif; 
-      background: linear-gradient(to right, #4facfe, #00f2fe);
-      text-align: center; 
+    body {
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
       padding-top: 100px;
     }
-    input, button { 
-      padding: 10px; 
-      margin: 10px; 
-      font-size: 16px;
+    button, input {
+      margin: 10px;
+      padding: 10px;
+      font-size: 18px;
+      border-radius: 8px;
+      border: none;
+    }
+    .btn {
+      background-color: #ffffff;
+      color: #0072ff;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <h1>Willkommen beim IrsanAI Travel-Tracker</h1>
-  <input type="text" id="usernameInput" placeholder="Dein Name bitte...">
-  <button onclick="checkLogin()">Login</button>
+  <h1>Willkommen im IrsanAI Travel Portal</h1>
 
-  <p id="statusMessage"></p>
+  <h2>Wer bist du?</h2>
+
+  <button class="btn" onclick="showLogin('freundin')">Freundin</button>
+  <button class="btn" onclick="showLogin('freund')">Bester Freund</button>
+  <button class="btn" onclick="showLogin('admin')">Admin</button>
+  <button class="btn" onclick="feind()">Feind</button>
+
+  <div id="loginDiv" style="margin-top:20px;"></div>
 
   <script>
-    function checkLogin() {
-      const input = document.getElementById("usernameInput").value.trim().toLowerCase();
-      const status = document.getElementById("statusMessage");
+    function showLogin(type) {
+      let html = `
+        <input type="password" id="password" placeholder="Passwort eingeben...">
+        <button onclick="login('${type}')">Login</button>
+      `;
+      document.getElementById("loginDiv").innerHTML = html;
+    }
 
-      if (input.includes("michelle")) {
-        status.innerHTML = "Freundin erkannt! Willkommen, Michelle!";
-        status.style.color = "pink";
-        // Hier kannst du weiterleiten auf Freundinnen-Seite etc.
-      } else if (input.includes("daniel")) {
-        status.innerHTML = "Bester Freund erkannt! Willkommen, Daniel!";
-        status.style.color = "blue";
-        // Hier kannst du Daniel-Funktionalität triggern
-      } else if (input.includes("irsan") || input.includes("bosna")) {
-        status.innerHTML = "Admin erkannt! Willkommen, Irsan!";
-        status.style.color = "green";
-        // Hier Admin-Zugang aufbauen
+    function login(type) {
+      const password = document.getElementById("password").value.trim().toLowerCase();
+
+      if (type === 'freundin' && password.includes('michelle')) {
+        window.location.href = "live.html";
+      } else if (type === 'freund' && password.includes('daniel')) {
+        window.location.href = "live.html";
+      } else if (type === 'admin' && password.includes('bosna')) {
+        window.location.href = "admin.html";
       } else {
-        status.innerHTML = "Feind erkannt! Zugriff wird protokolliert...";
-        status.style.color = "red";
-        // Hier IP-Logging vorbereiten
-        logFeind();
+        window.location.href = "feind.html";
       }
     }
 
-    function logFeind() {
-      const feindInfo = {
-        timestamp: new Date().toISOString(),
-        userAgent: navigator.userAgent,
-        // IP könnten wir z.B. extern mit einem kleinen Service holen später
-      };
-      console.log("Feind-Log:", feindInfo);
-      // Optional: feindInfo an ein kleines Server-Script schicken oder verschlüsselt speichern
+    function feind() {
+      window.location.href = "feind.html";
     }
   </script>
 
