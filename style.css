@@ -1,0 +1,27 @@
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(45deg, #1e1e1e, #2e2e2e);
+    color: white;
+    text-align: center;
+    padding: 50px;
+}
+
+.hidden {
+    display: none;
+}
+
+.login-container button {
+    margin: 10px;
+    padding: 15px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #4CAF50;
+    color: white;
+    transition: background 0.3s ease;
+}
+
+.login-container button:hover {
+    background: #45a049;
+}
