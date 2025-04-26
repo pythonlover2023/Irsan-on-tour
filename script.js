@@ -1,39 +1,36 @@
-function login(role) {
-    let password = prompt("Bitte Passwort eingeben:");
+function login() {
+    const name = document.getElementById('nameInput').value.toLowerCase();
 
-    if (role === 'freundin') {
-        if (password.toLowerCase().includes('michelle')) {
-            showWelcome("Willkommen meine liebe Michelle!");
-        } else {
-            alert("Falsches Passwort.");
-        }
-    } else if (role === 'besterfreund') {
-        if (password.toLowerCase().includes('daniel')) {
-            showWelcome("Willkommen mein bester Bro Daniel!");
-        } else {
-            alert("Falsches Passwort.");
-        }
-    } else if (role === 'admin') {
-        if (password.toLowerCase() === 'bosna') {
-            showWelcome("Willkommen Boss Irsan!");
-        } else {
-            alert("Falsches Passwort.");
-        }
-    } else if (role === 'feind') {
-        fakeErrorAndLogIP();
+    if (name.includes("michelle")) {
+        alert("Willkommen, vertrauenswürdige Freundin!");
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('mapSection').style.display = 'block';
+        document.getElementById('commentSection').style.display = 'block';
+    } else if (name.includes("daniel")) {
+        alert("Willkommen, bester Freund!");
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('mapSection').style.display = 'block';
+        document.getElementById('commentSection').style.display = 'block';
+    } else {
+        alert("Feind erkannt! Deine IP wird geloggt.");
+        logEnemy();
     }
 }
 
-function showWelcome(message) {
-    document.querySelector('.login-container').classList.add('hidden');
-    const app = document.getElementById('app');
-    app.classList.remove('hidden');
-    document.getElementById('welcome').innerText = message;
-    document.getElementById('content').innerHTML = "<p>Deine Abenteuerkarte und Daten erscheinen hier bald!</p>";
+function logEnemy() {
+    const now = new Date();
+    const log = `Feind entdeckt am ${now.toLocaleString()}`;
+    console.log(log);
+    // Hier könnte später ein GitHub Upload oder lokales speichern kommen
 }
 
-function fakeErrorAndLogIP() {
-    alert("Zugriff verweigert! Deine IP wurde gespeichert.");
-    // Simulierter Log (echtes Logging folgt später mit API + Verschlüsselung!)
-    console.log("Feindversuch geloggt: " + new Date().toISOString());
+function submitComment() {
+    const comment = document.getElementById('commentInput').value;
+    if (comment.trim() !== "") {
+        const commentsDiv = document.getElementById('comments');
+        const newComment = document.createElement('p');
+        newComment.textContent = comment;
+        commentsDiv.appendChild(newComment);
+        document.getElementById('commentInput').value = "";
+    }
 }
