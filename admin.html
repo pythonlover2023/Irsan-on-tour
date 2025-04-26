@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin-Panel</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="tracking.js" defer></script>
+</head>
+<body>
+  <h1>Willkommen, Irsan!</h1>
+
+  <button onclick="setStatus('Bin gut drauf')">Bin gut drauf</button>
+  <button onclick="setStatus('Snackpause')">Snackpause</button>
+  <button onclick="setStatus('Schlafen')">Schlafen</button>
+  <button onclick="setStatus('Grenze passiert')">Grenze passiert</button>
+  <button onclick="setStatus('Low Battery')">Low Battery</button>
+
+  <h2>Oder eigenen Status setzen:</h2>
+  <input type="text" id="customStatus" placeholder="Dein Status...">
+  <button onclick="customStatus()">Senden</button>
+
+  <h2>Live Position aktualisieren:</h2>
+  <button onclick="updateLocation()">GPS Aktualisieren</button>
+</body>
+</html>
