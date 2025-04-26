@@ -3,24 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Irsans Abenteuer-Tracker</title>
+    <title>Brudaaa Tracker</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="login-container">
-    <h1>Willkommen auf Irsans Mission!</h1>
-    <p>Wer bist du?</p>
-    <button onclick="login('freundin')">Freundin</button>
-    <button onclick="login('besterfreund')">Bester Freund</button>
-    <button onclick="login('feind')">Feind</button>
-    <button onclick="login('admin')">Irsan</button>
-</div>
+    <header>
+        <h1>Brudaaa Live Standort</h1>
+        <p>Letztes Update: <span id="lastUpdate">Noch kein Update</span></p>
+    </header>
 
-<div id="app" class="hidden">
-    <h2 id="welcome"></h2>
-    <div id="content"></div>
-</div>
+    <main>
+        <section id="loginSection">
+            <h2>Wer bist du?</h2>
+            <input type="text" id="nameInput" placeholder="Gib deinen Namen ein...">
+            <button onclick="login()">Einloggen</button>
+        </section>
+
+        <section id="mapSection" style="display:none;">
+            <h2>Aktuelle Position</h2>
+            <div id="map" style="height: 400px; width: 100%; background: #ccc;">Hier kommt die Karte</div>
+            <p id="statusMessage"></p>
+        </section>
+
+        <section id="commentSection" style="display:none;">
+            <h2>Kommentare</h2>
+            <textarea id="commentInput" placeholder="Kommentar schreiben..."></textarea>
+            <button onclick="submitComment()">Absenden</button>
+            <div id="comments"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Brudaaa Bus Tour 2025</p>
+    </footer>
 
 <script src="script.js"></script>
 </body>
