@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Kein Zutritt!</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>DU BIST NICHT BERECHTIGT!</h1>
+  <p>Deine IP wird geloggt...</p>
+
+  <script>
+    fetch('https://api.ipify.org?format=json')
+    .then(response => response.json())
+    .then(data => {
+      console.log("Feind IP:", data.ip);
+      // IP könnte später in GitHub JSON gespeichert werden
+    });
+  </script>
+</body>
+</html>
