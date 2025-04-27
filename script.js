@@ -1,100 +1,80 @@
 let map;
-let userMarker;
-let checkpoints = [];
+let gpsCollected = false;
 
-function login() {
-    const username = document.getElementById('username').value.trim().toLowerCase();
-    const password = document.getElementById('password').value.trim().toLowerCase();
+// Initialisiere Map
+function initMap() {
+    map = L.map('mapContainer').setView([44.2264, 17.9077], 13); // Travnik Startpunkt
 
-    if ((username.includes("daniel") && password.includes("daniel")) ||
-        (username.includes("michele") && password.includes("michele")) ||
-        (username.includes("irsan") && password.includes("bosna"))) {
-        document.getElementById('login-screen').classList.remove('active');
-        document.getElementById('dashboard').classList.add('active');
-        initializeMap();
-    } else {
-        alert("Zutritt verweigert, Feind erkannt.");
-    }
-}
-
-function initializeMap() {
-    map = L.map('map').setView([45.8, 15.97], 6); // Start über Kroatien/Bosnien, schöner Überblick
-
-    L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-        subdomains:['mt0','mt1','mt2','mt3'],
-        maxZoom: 20,
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap',
+        maxZoom: 18,
     }).addTo(map);
 }
 
+// GPS-Funktion mit Progressbar
 function updateGPS() {
-    const vehicle = document.getElementById('vehicle').value;
+    let progressBar = document.getElementById('gpsProgress');
+    progressBar.style.width = '0%';
+    progressBar.innerText = 'Starte GPS...';
 
     if (!navigator.geolocation) {
-        alert("GPS wird nicht unterstützt.");
+        progressBar.innerText = 'GPS nicht unterstützt!';
         return;
     }
 
-    // Ladebalken Animation starten
-    const bar = document.getElementById('loading-bar');
-    bar.style.width = "0%";
-    setTimeout(() => {
-        bar.style.width = "100%";
-    }, 50);
+    let collectedPositions = [];
 
-    navigator.geolocation.getCurrentPosition(position => {
-        const { latitude, longitude } = position.coords;
+    let gpsInterval = setInterval(() => {
+        if (collectedPositions.length >= 5) {
+            clearInterval(gpsInterval);
+            gpsCollected = true;
 
-        if (userMarker) {
-            userMarker.remove();
+            let avgLat = collectedPositions.reduce((sum, pos) => sum + pos.coords.latitude, 0) / collectedPositions.length;
+            let avgLon = collectedPositions.reduce((sum, pos) => sum + pos.coords.longitude, 0) / collectedPositions.length;
+
+            progressBar.style.width = '100%';
+            progressBar.innerText = 'GPS aktualisiert!';
+
+            updateMapPosition(avgLat, avgLon);
+            addChronikEntry(`GPS-Update: Du bist aktuell bei [${avgLat.toFixed(4)}, ${avgLon.toFixed(4)}] unterwegs.`);
+
+        } else {
+            navigator.geolocation.getCurrentPosition((position) => {
+                collectedPositions.push(position);
+
+                let percent = (collectedPositions.length / 5) * 100;
+                progressBar.style.width = `${percent}%`;
+                progressBar.innerText = `Sammle GPS... ${percent.toFixed(0)}%`;
+            }, (error) => {
+                progressBar.innerText = 'Fehler beim GPS Empfang!';
+                clearInterval(gpsInterval);
+            });
         }
-
-        let iconUrl = getVehicleIcon(vehicle);
-        const icon = L.icon({
-            iconUrl: iconUrl,
-            iconSize: [40, 40],
-            iconAnchor: [20, 40],
-            popupAnchor: [0, -40],
-        });
-
-        userMarker = L.marker([latitude, longitude], { icon: icon }).addTo(map)
-            .bindPopup(`🚍 Fahrzeug: ${vehicle}<br>📍 Position aktualisiert.`).openPopup();
-
-        map.setView([latitude, longitude], 14);
-
-        // Historie aktualisieren
-        const checkpoint = {
-            vehicle,
-            lat: latitude,
-            lng: longitude,
-            time: new Date().toLocaleTimeString()
-        };
-        checkpoints.push(checkpoint);
-        renderHistory();
-
-    }, () => {
-        alert("GPS Abruf fehlgeschlagen.");
-    });
+    }, 1000);
 }
 
-function getVehicleIcon(vehicle) {
-    switch (vehicle) {
-        case "bus":
-            return "https://cdn-icons-png.flaticon.com/512/1475/1475975.png";
-        case "auto":
-            return "https://cdn-icons-png.flaticon.com/512/633/633759.png";
-        case "bahn":
-            return "https://cdn-icons-png.flaticon.com/512/944/944042.png";
-        case "flugzeug":
-            return "https://cdn-icons-png.flaticon.com/512/681/681494.png";
-        default:
-            return "https://cdn-icons-png.flaticon.com/512/854/854878.png";
+// Map aktualisieren
+function updateMapPosition(lat, lon) {
+    if (map) {
+        map.setView([lat, lon], 13);
+        L.marker([lat, lon]).addTo(map)
+            .bindPopup('Hier bist du gerade, Bruder!')
+            .openPopup();
     }
 }
 
-function renderHistory() {
-    const historyDiv = document.getElementById('history');
-    historyDiv.innerHTML = "";
-    checkpoints.forEach((cp, index) => {
-        historyDiv.innerHTML += `<div>#${index + 1} - ${cp.vehicle.toUpperCase()} - ${cp.time}</div>`;
-    });
+// Chronik-Eintrag hinzufügen
+function addChronikEntry(text) {
+    let chronik = document.getElementById('chronik');
+    let entry = document.createElement('div');
+    entry.className = 'entry';
+    entry.innerHTML = `<p>${text}</p>`;
+    chronik.prepend(entry);
 }
+
+// Auto Map laden
+document.addEventListener('DOMContentLoaded', function () {
+    initMap();
+
+    document.getElementById('updateGPSBtn').addEventListener('click', updateGPS);
+});
