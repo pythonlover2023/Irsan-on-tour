@@ -1,60 +1,81 @@
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #111;
-    color: #eee;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212;
+    color: #e0e0e0;
 }
 
-.screen {
-    display: none;
-    padding: 20px;
+h1, h3 {
+    font-weight: bold;
+    text-align: center;
 }
 
-.screen.active {
-    display: block;
+.navbar {
+    background: linear-gradient(90deg, #0077ff, #00c3ff);
 }
 
-.controls {
-    margin-bottom: 10px;
+.card {
+    border-radius: 1rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
-#map {
-    width: 100%;
-    height: 400px;
-    margin-bottom: 20px;
-    border: 2px solid #444;
+#mapContainer {
+    background: radial-gradient(circle at center, #1a1a1a 0%, #0d0d0d 100%);
+    border: 3px solid #0077ff;
     border-radius: 10px;
+    overflow: hidden;
+    position: relative;
 }
 
-#loading-bar {
-    width: 0;
-    height: 10px;
-    background: limegreen;
-    margin-top: 10px;
-    transition: width 2s ease;
-    border-radius: 5px;
+#mapContainer p {
+    color: #888;
 }
 
-input, select, button {
-    display: block;
-    width: 100%;
-    margin: 10px 0;
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
-    font-size: 1em;
+.progress {
+    background-color: #333;
+}
+
+.progress-bar {
+    transition: width 1s ease-in-out;
+}
+
+#chronik {
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: #1a1a1a;
+    padding: 1rem;
+    border-radius: 10px;
+    border: 1px solid #555;
+}
+
+textarea {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    border: 1px solid #555;
+}
+
+select {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    border: 1px solid #555;
 }
 
 button {
-    background: #0080ff;
-    color: white;
-    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 button:hover {
-    background: #005bbb;
+    transform: scale(1.05);
 }
 
-h2, h3 {
-    text-align: center;
+.comment {
+    font-style: italic;
+    color: #9acd32;
+    margin-top: 5px;
+}
+
+/* Easter Egg Chris Tall Style */
+.navbar-brand::after {
+    content: "  |  Bosna-Edition";
+    font-size: 0.8rem;
+    color: #ffeb3b;
 }
