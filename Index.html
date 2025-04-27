@@ -2,37 +2,51 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
+    <title>Travnik GPS Tracker - Bosna Flow</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bratarsch Travel Login</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="styles.css">
-    <script src="scripts.js" defer></script>
+
+    <!-- Leaflet CSS für die Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+
+    <!-- Eigenes Style -->
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-dark text-light d-flex flex-column justify-content-center align-items-center" style="height: 100vh;">
+<body>
 
-    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Bratwurst.svg" alt="Bratarsch International Logo" style="width: 100px; animation: flyLogo 4s ease-in-out infinite alternate;">
+    <header>
+        <h1>Bruda, Bosna-Travel Tracker!</h1>
+        <p>Mit dem Flow von Chris Tall und dem Drive nach Travnik</p>
+    </header>
 
-    <h1 class="mt-4">Bratarsch International</h1>
-    <h3 class="mb-4">Travnik Style Travel Portal</h3>
+    <main>
+        <section class="gps-section">
+            <button id="updateGPSBtn">GPS aktualisieren</button>
+            <div class="progress-bar">
+                <div id="gpsProgress" class="progress"></div>
+            </div>
+        </section>
 
-    <div class="card p-4 bg-secondary" style="width: 300px;">
-        <div class="mb-3">
-            <label for="role" class="form-label">Bist du:</label>
-            <select class="form-select" id="role">
-                <option value="freundin">Freundin</option>
-                <option value="besterfreund">Bester Freund</option>
-                <option value="feind">Feind</option>
-                <option value="admin">Admin (Irsan)</option>
-            </select>
-        </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Passwort / Name</label>
-            <input type="text" class="form-control" id="password" placeholder="Dein Passwort...">
-        </div>
-        <button class="btn btn-primary w-100" onclick="login()">Login</button>
-    </div>
+        <section id="mapContainer" class="map-container">
+            <!-- Hier wird die Map rein geballert -->
+        </section>
 
-    <div id="loginMessage" class="mt-4"></div>
+        <section class="chronik-section">
+            <h2>Chronik</h2>
+            <div id="chronik">
+                <!-- Hier landen die Meilensteine -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Powered by IrsanAI - Travnik Style 2025</p>
+    </footer>
+
+    <!-- Leaflet JS für die Map -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <!-- Dein Travnik-Flow JS -->
+    <script src="scripts.js"></script>
 
 </body>
 </html>
