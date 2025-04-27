@@ -1,80 +1,48 @@
-let map;
-let gpsCollected = false;
+// Login Funktion
+function login() {
+    const username = document.getElementById('username').value.trim().toLowerCase();
 
-// Initialisiere Map
+    if (username === "irsan" || username === "daniel" || username === "michele") {
+        document.getElementById('login-section').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+        initMap();
+    } else {
+        alert("Feind erkannt, Bruda!");
+    }
+}
+
+// Map und GPS Funktionalität
+let map;
+
 function initMap() {
-    map = L.map('mapContainer').setView([44.2264, 17.9077], 13); // Travnik Startpunkt
+    map = L.map('mapContainer').setView([44.2264, 17.9078], 8); // Bosnien Standardansicht
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap',
-        maxZoom: 18,
+        attribution: '© OpenStreetMap'
     }).addTo(map);
 }
 
-// GPS-Funktion mit Progressbar
-function updateGPS() {
-    let progressBar = document.getElementById('gpsProgress');
+// GPS aktualisieren
+document.getElementById('updateGPSBtn').addEventListener('click', () => {
+    const progressBar = document.getElementById('gpsProgress');
     progressBar.style.width = '0%';
-    progressBar.innerText = 'Starte GPS...';
 
-    if (!navigator.geolocation) {
-        progressBar.innerText = 'GPS nicht unterstützt!';
-        return;
-    }
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += 10;
+        progressBar.style.width = progress + '%';
 
-    let collectedPositions = [];
-
-    let gpsInterval = setInterval(() => {
-        if (collectedPositions.length >= 5) {
-            clearInterval(gpsInterval);
-            gpsCollected = true;
-
-            let avgLat = collectedPositions.reduce((sum, pos) => sum + pos.coords.latitude, 0) / collectedPositions.length;
-            let avgLon = collectedPositions.reduce((sum, pos) => sum + pos.coords.longitude, 0) / collectedPositions.length;
-
-            progressBar.style.width = '100%';
-            progressBar.innerText = 'GPS aktualisiert!';
-
-            updateMapPosition(avgLat, avgLon);
-            addChronikEntry(`GPS-Update: Du bist aktuell bei [${avgLat.toFixed(4)}, ${avgLon.toFixed(4)}] unterwegs.`);
-
-        } else {
-            navigator.geolocation.getCurrentPosition((position) => {
-                collectedPositions.push(position);
-
-                let percent = (collectedPositions.length / 5) * 100;
-                progressBar.style.width = `${percent}%`;
-                progressBar.innerText = `Sammle GPS... ${percent.toFixed(0)}%`;
-            }, (error) => {
-                progressBar.innerText = 'Fehler beim GPS Empfang!';
-                clearInterval(gpsInterval);
-            });
+        if (progress >= 100) {
+            clearInterval(interval);
+            addChronikEintrag("GPS-Daten aktualisiert: Bus fliegt durch Bosna!");
         }
-    }, 1000);
-}
-
-// Map aktualisieren
-function updateMapPosition(lat, lon) {
-    if (map) {
-        map.setView([lat, lon], 13);
-        L.marker([lat, lon]).addTo(map)
-            .bindPopup('Hier bist du gerade, Bruder!')
-            .openPopup();
-    }
-}
+    }, 300);
+});
 
 // Chronik-Eintrag hinzufügen
-function addChronikEntry(text) {
-    let chronik = document.getElementById('chronik');
-    let entry = document.createElement('div');
-    entry.className = 'entry';
-    entry.innerHTML = `<p>${text}</p>`;
-    chronik.prepend(entry);
+function addChronikEintrag(text) {
+    const chronik = document.getElementById('chronik');
+    const entry = document.createElement('p');
+    entry.textContent = text;
+    chronik.appendChild(entry);
 }
-
-// Auto Map laden
-document.addEventListener('DOMContentLoaded', function () {
-    initMap();
-
-    document.getElementById('updateGPSBtn').addEventListener('click', updateGPS);
-});
