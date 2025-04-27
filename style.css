@@ -1,86 +1,68 @@
-/* Global */
 body {
+    font-family: Arial, sans-serif;
     margin: 0;
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(to bottom right, #f5f7fa, #c3cfe2);
-    color: #333;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    padding: 0;
+    background-color: #f4f4f4;
 }
 
-/* Header */
+.hidden {
+    display: none;
+}
+
 header {
-    background-color: #005f73;
+    background-color: #003366;
     color: white;
-    padding: 20px;
+    padding: 10px;
     text-align: center;
 }
 
-/* GPS Section */
-.gps-section {
+.gps-section, .chronik-section {
+    margin: 20px;
     text-align: center;
-    padding: 20px;
 }
 
-#updateGPSBtn {
-    background-color: #0a9396;
-    border: none;
-    color: white;
-    padding: 15px 25px;
-    font-size: 18px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-#updateGPSBtn:hover {
-    background-color: #94d2bd;
-}
-
-/* Progress Bar */
 .progress-bar {
     width: 80%;
-    height: 25px;
+    height: 20px;
     background-color: #ddd;
-    border-radius: 20px;
-    margin: 20px auto;
+    margin: 10px auto;
+    border-radius: 10px;
     overflow: hidden;
 }
 
 .progress {
     height: 100%;
-    width: 0%;
-    background-color: #ee9b00;
-    transition: width 0.5s;
+    width: 0;
+    background-color: #4caf50;
+    transition: width 2s;
 }
 
-/* Map Container */
 .map-container {
-    flex: 1;
-    margin: 20px;
     height: 400px;
-    border: 3px solid #005f73;
-    border-radius: 15px;
-    overflow: hidden;
-}
-
-/* Chronik Section */
-.chronik-section {
-    padding: 20px;
-    background-color: #e9d8a6;
     margin: 20px;
-    border-radius: 15px;
+    border: 2px solid #003366;
 }
 
-#chronik {
-    margin-top: 10px;
-}
-
-/* Footer */
 footer {
-    background-color: #005f73;
-    color: white;
     text-align: center;
     padding: 10px;
+    font-size: 0.8em;
+}
+
+.login-section {
+    text-align: center;
+    margin-top: 100px;
+}
+
+.login-section input {
+    padding: 10px;
+    margin: 10px;
+}
+
+.login-section button {
+    padding: 10px 20px;
+    background-color: #003366;
+    color: white;
+    border: none;
+    cursor: pointer;
 }
