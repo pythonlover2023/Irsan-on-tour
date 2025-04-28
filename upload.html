@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Travnik Upload Zone</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Style einbinden -->
+    <link rel="stylesheet" href="upload.css">
+</head>
+<body>
+
+    <header>
+        <h1>Travnik Upload Center</h1>
+        <p>Bring deine Bosna-Momente rein, Bruder!</p>
+    </header>
+
+    <main>
+        <section class="upload-section">
+            <h2>Neues Bild / Audio hochladen</h2>
+
+            <form id="uploadForm">
+                <!-- Dateiauswahl -->
+                <label for="fileInput">Wähle Bild oder Audio:</label>
+                <input type="file" id="fileInput" accept="image/*,audio/*" required>
+
+                <!-- Beschreibung -->
+                <label for="description">Deine Beschreibung:</label>
+                <textarea id="description" rows="4" placeholder="Was geht auf dem Bild / Audio ab?"></textarea>
+
+                <!-- Upload Button -->
+                <button type="submit">Upload starten</button>
+            </form>
+
+            <!-- Vorschau Bereich -->
+            <div id="preview"></div>
+
+            <!-- YOLO-Hashtags -->
+            <div id="autoTags">
+                <h3>Automatisch erkannte Hashtags:</h3>
+                <ul id="tagsList"></ul>
+            </div>
+        </section>
+
+        <section class="timeline-section">
+            <h2>Kommentare aus der Community</h2>
+            <div id="comments">
+                <!-- Dynamisch geladene Kommentare -->
+            </div>
+
+            <!-- Kommentar Formular -->
+            <form id="commentForm">
+                <input type="text" id="commentInput" placeholder="Dein Kommentar..." required>
+                <button type="submit">Absenden</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>Powered by IrsanAI & YOLO Magic - Travnik 2025</p>
+    </footer>
+
+    <!-- Dein Skript -->
+    <script src="upload.js"></script>
+</body>
+</html>
