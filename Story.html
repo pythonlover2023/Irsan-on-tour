@@ -2,113 +2,67 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>IrsanAI Upload</title>
+  <title>Daily Story Prompt</title>
   <style>
     body {
-      background-color: #111;
-      color: #0f0;
+      background-color: #222;
+      color: #eee;
       font-family: monospace;
       padding: 2rem;
       text-align: center;
     }
 
-    input, button {
-      margin: 1rem;
-      padding: 1rem;
+    textarea {
+      width: 90%;
+      height: 250px;
+      margin-top: 1rem;
       border-radius: 10px;
       border: none;
+      padding: 1rem;
       font-size: 1rem;
-    }
-
-    #status {
-      margin-top: 2rem;
+      background-color: #111;
       color: #0f0;
     }
 
-    progress {
-      width: 80%;
+    button {
       margin-top: 1rem;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 10px;
+      background-color: #0f0;
+      color: #000;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    #copied {
+      margin-top: 1rem;
+      color: #0f0;
     }
   </style>
 </head>
 <body>
 
-  <h1>IrsanAI Upload</h1>
-  <p>Upload Text, Bild, Ton oder Video – sogar offline.</p>
+  <h1>Balkan-Roadtrip Prompt</h1>
+  <p>Drück auf Brudaaa, um deinen Story-Prompt zu bekommen</p>
 
-  <input type="file" id="fileInput" multiple>
+  <textarea id="promptText">
+Erzähle in einem emotionalen, bildgewaltigen Stil von einem Tag deines Balkan-Roadtrips. Beschreibe die Stimmung, den Ort, besondere Begegnungen, Gerüche und Geräusche. Integriere mindestens ein Bild, ein kurzes Audiofile oder ein kurzes Video als Medienverweis.
+
+#balkan #roadtrip #diary #emotion #wildlife #nightdrive #nature
+  </textarea>
+
   <br>
-  <button onclick="handleUpload()">Brudaaa Upload</button>
-
-  <div id="status">Bereit...</div>
-  <progress id="progressBar" value="0" max="100" style="display:none;"></progress>
+  <button onclick="copyPrompt()">Brudaaa Copy!</button>
+  <div id="copied"></div>
 
   <script>
-    const queueKey = "irsanAI_upload_queue";
-
-    async function handleUpload() {
-      const files = document.getElementById("fileInput").files;
-      if (!files.length) {
-        document.getElementById("status").innerText = "Keine Datei ausgewählt.";
-        return;
-      }
-
-      for (let file of files) {
-        const reader = new FileReader();
-        reader.onload = function () {
-          const base64 = reader.result;
-          const item = {
-            name: file.name,
-            content: base64,
-            type: file.type,
-            timestamp: new Date().toISOString()
-          };
-          saveToQueue(item);
-        };
-        reader.readAsDataURL(file);
-      }
-
-      document.getElementById("status").innerText = "Dateien in Warteschlange!";
-      tryAutoUpload();
+    function copyPrompt() {
+      const textArea = document.getElementById("promptText");
+      textArea.select();
+      document.execCommand("copy");
+      document.getElementById("copied").innerText = "Prompt kopiert – Jetzt kannst du kreativ loslegen!";
     }
-
-    function saveToQueue(item) {
-      let queue = JSON.parse(localStorage.getItem(queueKey)) || [];
-      queue.push(item);
-      localStorage.setItem(queueKey, JSON.stringify(queue));
-    }
-
-    function tryAutoUpload() {
-      if (!navigator.onLine) {
-        document.getElementById("status").innerText = "Offline – Upload folgt automatisch!";
-        return;
-      }
-
-      let queue = JSON.parse(localStorage.getItem(queueKey)) || [];
-      if (!queue.length) return;
-
-      document.getElementById("status").innerText = "Synchronisiere Dateien...";
-      document.getElementById("progressBar").style.display = "block";
-
-      let uploaded = 0;
-      const total = queue.length;
-
-      queue.forEach((item, index) => {
-        setTimeout(() => {
-          // Hier würde der Upload an dein Backend/API erfolgen.
-          uploaded++;
-          document.getElementById("progressBar").value = (uploaded / total) * 100;
-
-          if (uploaded === total) {
-            localStorage.removeItem(queueKey);
-            document.getElementById("status").innerText = "Alle Dateien hochgeladen!";
-            document.getElementById("progressBar").style.display = "none";
-          }
-        }, 500 * index); // Simulierter Upload
-      });
-    }
-
-    window.addEventListener("online", tryAutoUpload);
   </script>
 
 </body>
