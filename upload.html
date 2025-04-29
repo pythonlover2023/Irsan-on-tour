@@ -1,109 +1,136 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Balkan Roadtrip Upload</title>
+  <meta charset="UTF-8" />
+  <title>IrsanAI Upload Machine</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
   <style>
     body {
-      font-family: sans-serif;
-      background: #0d0d0d;
-      color: #fff;
-      text-align: center;
-      padding: 2rem;
+      background: #111;
+      color: #0f0;
+      font-family: monospace;
+      padding: 2em;
     }
-    .upload-box {
-      border: 2px dashed #aaa;
-      padding: 2rem;
-      margin-bottom: 1rem;
+    input, button {
+      padding: 1em;
+      font-size: 1em;
+      margin: 1em 0;
     }
-    .upload-btn, .story-btn {
-      margin: 1rem;
-      padding: 1rem 2rem;
-      font-size: 1.1rem;
-      border: none;
-      border-radius: 10px;
-      background: #1db954;
-      color: white;
-      cursor: pointer;
+    .result, canvas, img {
+      margin-top: 1em;
+      border: 1px solid #0f0;
+      max-width: 100%;
     }
-    .upload-btn:disabled {
-      background: #444;
-      cursor: not-allowed;
-    }
-    .balkan-flag {
-      display: inline-block;
-      animation: spin 2s linear infinite;
-      font-size: 2rem;
+    .progress {
+      height: 20px;
+      width: 100%;
+      background: #333;
+      border-radius: 5px;
       margin-top: 10px;
     }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    .success {
-      color: #00ff00;
-      font-size: 1.2rem;
+    .bar {
+      height: 100%;
+      width: 0%;
+      background: #0f0;
+      border-radius: 5px;
     }
   </style>
 </head>
 <body>
+  <h1>Brudaa Upload Terminal</h1>
 
-  <h1>Balkan Upload System</h1>
-  <div class="upload-box">
-    <input type="file" id="fileInput" multiple>
-    <br>
-    <button class="upload-btn" onclick="saveToQueue()">Upload (auch offline!)</button>
-    <div id="uploadStatus"></div>
-    <div class="balkan-flag" id="flagIcon" style="display:none;">🇧🇦</div>
-  </div>
+  <input type="file" id="media" accept="image/*,video/*,audio/*,text/*" multiple>
+  <button onclick="brudaaUpload()">Brudaa Upload</button>
+  <button onclick="runYOLO()">YOLO Check</button>
 
-  <textarea id="userComment" placeholder="Dein Kommentar zum Tag" rows="4" cols="50"></textarea>
-  <br>
-  <button class="story-btn" onclick="copyStoryPrompt()">Story erstellen</button>
+  <div class="progress"><div class="bar" id="progressBar"></div></div>
+  <canvas id="canvas"></canvas>
+  <div id="result" class="result">Bereit...</div>
 
   <script>
-    const queueKey = "offlineUploadQueue";
+    let uploadQueue = [];
+    let model;
 
-    function saveToQueue() {
-      const files = document.getElementById("fileInput").files;
-      if (files.length === 0) return alert("Bitte eine Datei auswählen.");
-      const queue = JSON.parse(localStorage.getItem(queueKey) || "[]");
-      for (let file of files) {
-        queue.push({
-          name: file.name,
-          content: "MOCK_DATA_" + new Date().toISOString(), // Platzhalter
-          timestamp: new Date().toISOString()
+    // YOLO-Modell laden
+    cocoSsd.load().then(m => {
+      model = m;
+      document.getElementById("result").textContent = "System ready. Brudaa!";
+    });
+
+    function runYOLO() {
+      const files = document.getElementById('media').files;
+      if (!files.length) return alert("Wähle ein Bild!");
+
+      const img = new Image();
+      const reader = new FileReader();
+      reader.onload = () => {
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(files[0]);
+
+      img.onload = async () => {
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+
+        const predictions = await model.detect(img);
+        predictions.forEach(pred => {
+          ctx.strokeStyle = "#0f0";
+          ctx.lineWidth = 2;
+          ctx.strokeRect(...pred.bbox);
+          ctx.fillStyle = "#0f0";
+          ctx.fillText(pred.class, pred.bbox[0], pred.bbox[1] - 5);
         });
+
+        const hashtags = predictions.map(p => `#${p.class}`).join(" ");
+        document.getElementById("result").innerHTML =
+          `<strong>YOLO:</strong><br>${hashtags}`;
+      };
+    }
+
+    function brudaaUpload() {
+      const files = document.getElementById('media').files;
+      if (!files.length) return alert("Keine Dateien gewählt!");
+
+      for (let file of files) {
+        uploadQueue.push(file);
       }
-      localStorage.setItem(queueKey, JSON.stringify(queue));
-      document.getElementById("uploadStatus").innerText = "Dateien gespeichert. Werden hochgeladen, wenn Internet da ist.";
+
+      if (navigator.onLine) {
+        processQueue();
+      } else {
+        alert("Kein Netz – Dateien gespeichert in Warteschlange!");
+      }
     }
 
-    function tryUploadQueue() {
-      const queue = JSON.parse(localStorage.getItem(queueKey) || "[]");
-      if (queue.length === 0) return;
+    async function processQueue() {
+      if (!uploadQueue.length) return;
 
-      document.getElementById("flagIcon").style.display = "inline-block";
+      for (let i = 0; i < uploadQueue.length; i++) {
+        const file = uploadQueue[i];
+        const percent = Math.round(((i + 1) / uploadQueue.length) * 100);
+        document.getElementById("progressBar").style.width = percent + "%";
 
-      // Simulierter Upload (z.B. via GitHub API später)
-      setTimeout(() => {
-        localStorage.removeItem(queueKey);
-        document.getElementById("flagIcon").style.display = "none";
-        document.getElementById("uploadStatus").innerHTML = '<div class="success">Upload abgeschlossen ✅</div>';
-      }, 3000); // Simulierter 3 Sek. Upload
+        // Simulierter Upload
+        await new Promise(r => setTimeout(r, 800));
+        console.log("Upload:", file.name);
+
+        // Optional: hier POST mit fetch() o.ä. an Backend
+      }
+
+      uploadQueue = [];
+      document.getElementById("result").innerText = "Upload abgeschlossen!";
     }
 
-    function copyStoryPrompt() {
-      const comment = document.getElementById("userComment").value;
-      const today = new Date().toLocaleDateString();
-      const prompt = `# Balkan Story Log - ${today}\n\nDein Text:\n${comment}\n\nErkannte Inhalte: [Wird später mit YOLO ergänzt]\nTags: #roadtrip #balkan`;
-      navigator.clipboard.writeText(prompt).then(() => {
-        alert("Story Prompt kopiert! Jetzt an ChatGPT schicken.");
-      });
-    }
-
-    window.addEventListener('online', tryUploadQueue);
-    if (navigator.onLine) tryUploadQueue();
+    window.addEventListener("online", () => {
+      if (uploadQueue.length) {
+        alert("Verbindung wieder da – Upload startet...");
+        processQueue();
+      }
+    });
   </script>
 </body>
 </html>
