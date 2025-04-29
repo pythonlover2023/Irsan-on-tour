@@ -1,92 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Brudaa Upload Station</title>
+  <meta charset="UTF-8">
+  <title>IrsanAI Installer</title>
   <style>
     body {
-      font-family: monospace;
-      background: #111;
+      background-color: #000;
       color: #0f0;
-      padding: 2em;
+      font-family: monospace;
+      text-align: center;
+      padding: 3rem;
     }
-    .brudaa-btn {
-      background: #0f0;
-      color: #111;
+
+    button {
+      background-color: #0f0;
+      color: #000;
       border: none;
-      padding: 1em 2em;
-      font-size: 1.5em;
-      cursor: pointer;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      font-weight: bold;
       border-radius: 10px;
-      margin: 1em 0;
+      cursor: pointer;
     }
-    .status {
-      margin-top: 1em;
-      font-size: 1em;
-      color: #0ff;
+
+    button:hover {
+      background-color: #0c0;
     }
-    .gif-container {
-      margin-top: 2em;
+
+    .log {
+      margin-top: 2rem;
+      text-align: left;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      background: #111;
+      padding: 1rem;
+      border-radius: 8px;
     }
   </style>
 </head>
 <body>
-  <h1>Balkan Roadtrip Diary: Install Station</h1>
 
-  <input type="file" id="mediaUpload" accept="image/*,video/*,audio/*" multiple />
-  <br /><br />
-  <button class="brudaa-btn" onclick="handleBrudaa()">Brudaa</button>
+  <h1>Brudaaa Installer</h1>
+  <p>Starte die magische Baustelle – IrsanAI Files & Struktur erzeugen!</p>
+  <button onclick="runInstaller()">Brudaaa – Let's Go!</button>
 
-  <div class="status" id="status">Wartet auf Input...</div>
-
-  <div class="gif-container">
-    <img src="https://media.giphy.com/media/3o6ZsVZDFa1MN0ZR4g/giphy.gif" alt="Baustelle" width="200">
-  </div>
+  <div class="log" id="log"></div>
 
   <script>
-    let queue = JSON.parse(localStorage.getItem('offlineQueue') || '[]');
+    const filesToCreate = [
+      { name: "upload.html", content: "<!-- Upload-HTML kommt noch rein -->" },
+      { name: "story.html", content: "<!-- Story Generator kommt noch rein -->" },
+      { name: "yolo.html", content: "<!-- YOLO Ansicht kommt noch rein -->" },
+      { name: "offlineQueue.js", content: "// Warteschleifen-Logik folgt" }
+    ];
 
-    function handleBrudaa() {
-      const files = document.getElementById('mediaUpload').files;
-      if (!files.length) {
-        document.getElementById('status').textContent = "Brudaa, du hast nix ausgewählt!";
-        return;
-      }
+    function runInstaller() {
+      const logEl = document.getElementById("log");
+      logEl.innerHTML = "Installiere...<br>";
 
-      [...files].forEach(file => {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          queue.push({
-            name: file.name,
-            data: evt.target.result,
-            timestamp: new Date().toISOString()
-          });
-          localStorage.setItem('offlineQueue', JSON.stringify(queue));
-          document.getElementById('status').textContent = "In Warteschlange... " + file.name;
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-
-    function tryUpload() {
-      if (!navigator.onLine || !queue.length) return;
-
-      // Dummy-Upload-Simulation
-      let uploaded = [];
-      queue.forEach((item, index) => {
-        console.log("Uploading:", item.name);
-        uploaded.push(index);
-        document.getElementById('status').textContent = "Hochgeladen: " + item.name;
+      filesToCreate.forEach(file => {
+        logEl.innerHTML += `+ ${file.name} vorbereitet<br>`;
       });
 
-      // Entferne hochgeladene Items
-      uploaded.reverse().forEach(i => queue.splice(i, 1));
-      localStorage.setItem('offlineQueue', JSON.stringify(queue));
+      logEl.innerHTML += "<br>Brudaaa Setup abgeschlossen. Jetzt manuell die Inhalte einfügen und committen!";
     }
-
-    setInterval(tryUpload, 5000);
-    window.addEventListener("online", tryUpload);
   </script>
+
 </body>
 </html>
