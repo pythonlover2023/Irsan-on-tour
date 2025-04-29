@@ -1,44 +1,92 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Balkan Roadtrip Baustelle</title>
-    <style>
-        body {
-            background-color: #111;
-            color: #fff;
-            font-family: 'Arial', sans-serif;
-            text-align: center;
-            padding: 50px;
-        }
-        #installBtn {
-            background-color: #e63946;
-            border: none;
-            padding: 20px 40px;
-            font-size: 24px;
-            color: white;
-            border-radius: 12px;
-            cursor: pointer;
-        }
-        #loader {
-            display: none;
-            margin-top: 30px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Brudaa Upload Station</title>
+  <style>
+    body {
+      font-family: monospace;
+      background: #111;
+      color: #0f0;
+      padding: 2em;
+    }
+    .brudaa-btn {
+      background: #0f0;
+      color: #111;
+      border: none;
+      padding: 1em 2em;
+      font-size: 1.5em;
+      cursor: pointer;
+      border-radius: 10px;
+      margin: 1em 0;
+    }
+    .status {
+      margin-top: 1em;
+      font-size: 1em;
+      color: #0ff;
+    }
+    .gif-container {
+      margin-top: 2em;
+    }
+  </style>
 </head>
 <body>
+  <h1>Balkan Roadtrip Diary: Install Station</h1>
 
-<h1>Baustelle bereit, Bruder!</h1>
-<p>Drücke auf den Knopf und gib der Schaufel!</p>
+  <input type="file" id="mediaUpload" accept="image/*,video/*,audio/*" multiple />
+  <br /><br />
+  <button class="brudaa-btn" onclick="handleBrudaa()">Brudaa</button>
 
-<button id="installBtn">Brudaa GO!</button>
+  <div class="status" id="status">Wartet auf Input...</div>
 
-<div id="loader">
-    <img src="https://media.giphy.com/media/L05HgB2h6qICDs5Sms/giphy.gif" width="300" alt="Baustelle läuft...">
-    <p>Installation läuft... chill!</p>
-</div>
+  <div class="gif-container">
+    <img src="https://media.giphy.com/media/3o6ZsVZDFa1MN0ZR4g/giphy.gif" alt="Baustelle" width="200">
+  </div>
 
-<script src="install.js"></script>
+  <script>
+    let queue = JSON.parse(localStorage.getItem('offlineQueue') || '[]');
 
+    function handleBrudaa() {
+      const files = document.getElementById('mediaUpload').files;
+      if (!files.length) {
+        document.getElementById('status').textContent = "Brudaa, du hast nix ausgewählt!";
+        return;
+      }
+
+      [...files].forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          queue.push({
+            name: file.name,
+            data: evt.target.result,
+            timestamp: new Date().toISOString()
+          });
+          localStorage.setItem('offlineQueue', JSON.stringify(queue));
+          document.getElementById('status').textContent = "In Warteschlange... " + file.name;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function tryUpload() {
+      if (!navigator.onLine || !queue.length) return;
+
+      // Dummy-Upload-Simulation
+      let uploaded = [];
+      queue.forEach((item, index) => {
+        console.log("Uploading:", item.name);
+        uploaded.push(index);
+        document.getElementById('status').textContent = "Hochgeladen: " + item.name;
+      });
+
+      // Entferne hochgeladene Items
+      uploaded.reverse().forEach(i => queue.splice(i, 1));
+      localStorage.setItem('offlineQueue', JSON.stringify(queue));
+    }
+
+    setInterval(tryUpload, 5000);
+    window.addEventListener("online", tryUpload);
+  </script>
 </body>
 </html>
