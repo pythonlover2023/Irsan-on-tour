@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>IrsanAI Upload</title>
+  <style>
+    body {
+      background-color: #111;
+      color: #0f0;
+      font-family: monospace;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    input, button {
+      margin: 1rem;
+      padding: 1rem;
+      border-radius: 10px;
+      border: none;
+      font-size: 1rem;
+    }
+
+    #status {
+      margin-top: 2rem;
+      color: #0f0;
+    }
+
+    progress {
+      width: 80%;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>IrsanAI Upload</h1>
+  <p>Upload Text, Bild, Ton oder Video – sogar offline.</p>
+
+  <input type="file" id="fileInput" multiple>
+  <br>
+  <button onclick="handleUpload()">Brudaaa Upload</button>
+
+  <div id="status">Bereit...</div>
+  <progress id="progressBar" value="0" max="100" style="display:none;"></progress>
+
+  <script>
+    const queueKey = "irsanAI_upload_queue";
+
+    async function handleUpload() {
+      const files = document.getElementById("fileInput").files;
+      if (!files.length) {
+        document.getElementById("status").innerText = "Keine Datei ausgewählt.";
+        return;
+      }
+
+      for (let file of files) {
+        const reader = new FileReader();
+        reader.onload = function () {
+          const base64 = reader.result;
+          const item = {
+            name: file.name,
+            content: base64,
+            type: file.type,
+            timestamp: new Date().toISOString()
+          };
+          saveToQueue(item);
+        };
+        reader.readAsDataURL(file);
+      }
+
+      document.getElementById("status").innerText = "Dateien in Warteschlange!";
+      tryAutoUpload();
+    }
+
+    function saveToQueue(item) {
+      let queue = JSON.parse(localStorage.getItem(queueKey)) || [];
+      queue.push(item);
+      localStorage.setItem(queueKey, JSON.stringify(queue));
+    }
+
+    function tryAutoUpload() {
+      if (!navigator.onLine) {
+        document.getElementById("status").innerText = "Offline – Upload folgt automatisch!";
+        return;
+      }
+
+      let queue = JSON.parse(localStorage.getItem(queueKey)) || [];
+      if (!queue.length) return;
+
+      document.getElementById("status").innerText = "Synchronisiere Dateien...";
+      document.getElementById("progressBar").style.display = "block";
+
+      let uploaded = 0;
+      const total = queue.length;
+
+      queue.forEach((item, index) => {
+        setTimeout(() => {
+          // Hier würde der Upload an dein Backend/API erfolgen.
+          uploaded++;
+          document.getElementById("progressBar").value = (uploaded / total) * 100;
+
+          if (uploaded === total) {
+            localStorage.removeItem(queueKey);
+            document.getElementById("status").innerText = "Alle Dateien hochgeladen!";
+            document.getElementById("progressBar").style.display = "none";
+          }
+        }, 500 * index); // Simulierter Upload
+      });
+    }
+
+    window.addEventListener("online", tryAutoUpload);
+  </script>
+
+</body>
+</html>
