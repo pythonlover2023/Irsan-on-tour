@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Balkan Roadtrip Upload</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #0d0d0d;
+      color: #fff;
+      text-align: center;
+      padding: 2rem;
+    }
+    .upload-box {
+      border: 2px dashed #aaa;
+      padding: 2rem;
+      margin-bottom: 1rem;
+    }
+    .upload-btn, .story-btn {
+      margin: 1rem;
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 10px;
+      background: #1db954;
+      color: white;
+      cursor: pointer;
+    }
+    .upload-btn:disabled {
+      background: #444;
+      cursor: not-allowed;
+    }
+    .balkan-flag {
+      display: inline-block;
+      animation: spin 2s linear infinite;
+      font-size: 2rem;
+      margin-top: 10px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .success {
+      color: #00ff00;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Balkan Upload System</h1>
+  <div class="upload-box">
+    <input type="file" id="fileInput" multiple>
+    <br>
+    <button class="upload-btn" onclick="saveToQueue()">Upload (auch offline!)</button>
+    <div id="uploadStatus"></div>
+    <div class="balkan-flag" id="flagIcon" style="display:none;">🇧🇦</div>
+  </div>
+
+  <textarea id="userComment" placeholder="Dein Kommentar zum Tag" rows="4" cols="50"></textarea>
+  <br>
+  <button class="story-btn" onclick="copyStoryPrompt()">Story erstellen</button>
+
+  <script>
+    const queueKey = "offlineUploadQueue";
+
+    function saveToQueue() {
+      const files = document.getElementById("fileInput").files;
+      if (files.length === 0) return alert("Bitte eine Datei auswählen.");
+      const queue = JSON.parse(localStorage.getItem(queueKey) || "[]");
+      for (let file of files) {
+        queue.push({
+          name: file.name,
+          content: "MOCK_DATA_" + new Date().toISOString(), // Platzhalter
+          timestamp: new Date().toISOString()
+        });
+      }
+      localStorage.setItem(queueKey, JSON.stringify(queue));
+      document.getElementById("uploadStatus").innerText = "Dateien gespeichert. Werden hochgeladen, wenn Internet da ist.";
+    }
+
+    function tryUploadQueue() {
+      const queue = JSON.parse(localStorage.getItem(queueKey) || "[]");
+      if (queue.length === 0) return;
+
+      document.getElementById("flagIcon").style.display = "inline-block";
+
+      // Simulierter Upload (z.B. via GitHub API später)
+      setTimeout(() => {
+        localStorage.removeItem(queueKey);
+        document.getElementById("flagIcon").style.display = "none";
+        document.getElementById("uploadStatus").innerHTML = '<div class="success">Upload abgeschlossen ✅</div>';
+      }, 3000); // Simulierter 3 Sek. Upload
+    }
+
+    function copyStoryPrompt() {
+      const comment = document.getElementById("userComment").value;
+      const today = new Date().toLocaleDateString();
+      const prompt = `# Balkan Story Log - ${today}\n\nDein Text:\n${comment}\n\nErkannte Inhalte: [Wird später mit YOLO ergänzt]\nTags: #roadtrip #balkan`;
+      navigator.clipboard.writeText(prompt).then(() => {
+        alert("Story Prompt kopiert! Jetzt an ChatGPT schicken.");
+      });
+    }
+
+    window.addEventListener('online', tryUploadQueue);
+    if (navigator.onLine) tryUploadQueue();
+  </script>
+</body>
+</html>
