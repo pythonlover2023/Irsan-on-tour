@@ -1,51 +1,85 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>IrsanAI Zentrale</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Balkan Roadtrip Diary – IrsanAI Control</title>
   <style>
     body {
-      background: #111;
-      color: #0f0;
-      font-family: monospace;
+      background-color: #111;
+      color: #f0f0f0;
+      font-family: 'Segoe UI', sans-serif;
       text-align: center;
-      padding: 4em 1em;
+      padding: 2rem;
     }
+
     h1 {
-      font-size: 2em;
-      margin-bottom: 1em;
+      font-size: 2rem;
+      margin-bottom: 1rem;
     }
-    .btn {
-      display: block;
-      margin: 1em auto;
-      padding: 1em 2em;
-      border: 2px solid #0f0;
-      background: none;
-      color: #0f0;
-      text-decoration: none;
-      font-size: 1.2em;
-      width: fit-content;
-      transition: all 0.2s;
+
+    .button {
+      padding: 1rem 2rem;
+      margin: 1rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      background-color: #00b894;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
     }
-    .btn:hover {
-      background: #0f0;
-      color: #111;
+
+    .button:hover {
+      background-color: #019875;
     }
-    footer {
-      margin-top: 3em;
-      font-size: 0.9em;
+
+    .status {
+      margin-top: 2rem;
+      font-size: 1rem;
+      color: #aaa;
+    }
+
+    .gif-box {
+      margin-top: 2rem;
+    }
+
+    .gif-box img {
+      width: 100%;
+      max-width: 500px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,255,0,0.3);
+    }
+
+    .footer {
+      margin-top: 4rem;
+      font-size: 0.8rem;
       color: #555;
     }
   </style>
 </head>
 <body>
-  <h1>IrsanAI Dashboard</h1>
 
-  <a href="install.html" class="btn">Install Brudaa</a>
-  <a href="upload.html" class="btn">Upload Brudaa</a>
+  <h1>Balkan Roadtrip Diary</h1>
+  <p>IrsanAI Dashboard – Ready für Uploads, Prompts, YOLO & mehr</p>
 
-  <footer>
-    Balkan Edition – Powered by YOLO & Liebe
-  </footer>
+  <button class="button" onclick="location.href='install.html'">Install: Brudaaa Setup starten</button>
+  <button class="button" onclick="location.href='upload.html'">Medien-Upload starten</button>
+  <button class="button" onclick="location.href='story.html'">Story Prompt generieren</button>
+  <button class="button" onclick="location.href='yolo.html'">YOLO Vision öffnen</button>
+
+  <div class="gif-box">
+    <img src="https://media.giphy.com/media/l0ExncehJzexFpRHq/giphy.gif" alt="Baustelle Brudaaa">
+  </div>
+
+  <div class="status">
+    Aktueller Build: Brudaaa Alpha | Netlify ready | Offline-Sync aktiviert
+  </div>
+
+  <div class="footer">
+    Balkan-Style coded with Rakija & Soul – powered by IrsanAI
+  </div>
+
 </body>
 </html>
