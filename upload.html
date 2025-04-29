@@ -1,136 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <title>IrsanAI Upload Machine</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+  <meta charset="UTF-8">
+  <title>IrsanAI Upload</title>
   <style>
     body {
-      background: #111;
+      background-color: #111;
       color: #0f0;
       font-family: monospace;
-      padding: 2em;
+      padding: 2rem;
+      text-align: center;
     }
+
     input, button {
-      padding: 1em;
-      font-size: 1em;
-      margin: 1em 0;
+      margin: 1rem;
+      padding: 1rem;
+      border-radius: 10px;
+      border: none;
+      font-size: 1rem;
     }
-    .result, canvas, img {
-      margin-top: 1em;
-      border: 1px solid #0f0;
-      max-width: 100%;
+
+    #status {
+      margin-top: 2rem;
+      color: #0f0;
     }
-    .progress {
-      height: 20px;
-      width: 100%;
-      background: #333;
-      border-radius: 5px;
-      margin-top: 10px;
-    }
-    .bar {
-      height: 100%;
-      width: 0%;
-      background: #0f0;
-      border-radius: 5px;
+
+    progress {
+      width: 80%;
+      margin-top: 1rem;
     }
   </style>
 </head>
 <body>
-  <h1>Brudaa Upload Terminal</h1>
 
-  <input type="file" id="media" accept="image/*,video/*,audio/*,text/*" multiple>
-  <button onclick="brudaaUpload()">Brudaa Upload</button>
-  <button onclick="runYOLO()">YOLO Check</button>
+  <h1>IrsanAI Upload</h1>
+  <p>Upload Text, Bild, Ton oder Video – sogar offline.</p>
 
-  <div class="progress"><div class="bar" id="progressBar"></div></div>
-  <canvas id="canvas"></canvas>
-  <div id="result" class="result">Bereit...</div>
+  <input type="file" id="fileInput" multiple>
+  <br>
+  <button onclick="handleUpload()">Brudaaa Upload</button>
+
+  <div id="status">Bereit...</div>
+  <progress id="progressBar" value="0" max="100" style="display:none;"></progress>
 
   <script>
-    let uploadQueue = [];
-    let model;
+    const queueKey = "irsanAI_upload_queue";
 
-    // YOLO-Modell laden
-    cocoSsd.load().then(m => {
-      model = m;
-      document.getElementById("result").textContent = "System ready. Brudaa!";
-    });
-
-    function runYOLO() {
-      const files = document.getElementById('media').files;
-      if (!files.length) return alert("Wähle ein Bild!");
-
-      const img = new Image();
-      const reader = new FileReader();
-      reader.onload = () => {
-        img.src = reader.result;
-      };
-      reader.readAsDataURL(files[0]);
-
-      img.onload = async () => {
-        const canvas = document.getElementById("canvas");
-        const ctx = canvas.getContext("2d");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
-
-        const predictions = await model.detect(img);
-        predictions.forEach(pred => {
-          ctx.strokeStyle = "#0f0";
-          ctx.lineWidth = 2;
-          ctx.strokeRect(...pred.bbox);
-          ctx.fillStyle = "#0f0";
-          ctx.fillText(pred.class, pred.bbox[0], pred.bbox[1] - 5);
-        });
-
-        const hashtags = predictions.map(p => `#${p.class}`).join(" ");
-        document.getElementById("result").innerHTML =
-          `<strong>YOLO:</strong><br>${hashtags}`;
-      };
-    }
-
-    function brudaaUpload() {
-      const files = document.getElementById('media').files;
-      if (!files.length) return alert("Keine Dateien gewählt!");
+    async function handleUpload() {
+      const files = document.getElementById("fileInput").files;
+      if (!files.length) {
+        document.getElementById("status").innerText = "Keine Datei ausgewählt.";
+        return;
+      }
 
       for (let file of files) {
-        uploadQueue.push(file);
+        const reader = new FileReader();
+        reader.onload = function () {
+          const base64 = reader.result;
+          const item = {
+            name: file.name,
+            content: base64,
+            type: file.type,
+            timestamp: new Date().toISOString()
+          };
+          saveToQueue(item);
+        };
+        reader.readAsDataURL(file);
       }
 
-      if (navigator.onLine) {
-        processQueue();
-      } else {
-        alert("Kein Netz – Dateien gespeichert in Warteschlange!");
-      }
+      document.getElementById("status").innerText = "Dateien in Warteschlange!";
+      tryAutoUpload();
     }
 
-    async function processQueue() {
-      if (!uploadQueue.length) return;
-
-      for (let i = 0; i < uploadQueue.length; i++) {
-        const file = uploadQueue[i];
-        const percent = Math.round(((i + 1) / uploadQueue.length) * 100);
-        document.getElementById("progressBar").style.width = percent + "%";
-
-        // Simulierter Upload
-        await new Promise(r => setTimeout(r, 800));
-        console.log("Upload:", file.name);
-
-        // Optional: hier POST mit fetch() o.ä. an Backend
-      }
-
-      uploadQueue = [];
-      document.getElementById("result").innerText = "Upload abgeschlossen!";
+    function saveToQueue(item) {
+      let queue = JSON.parse(localStorage.getItem(queueKey)) || [];
+      queue.push(item);
+      localStorage.setItem(queueKey, JSON.stringify(queue));
     }
 
-    window.addEventListener("online", () => {
-      if (uploadQueue.length) {
-        alert("Verbindung wieder da – Upload startet...");
-        processQueue();
+    function tryAutoUpload() {
+      if (!navigator.onLine) {
+        document.getElementById("status").innerText = "Offline – Upload folgt automatisch!";
+        return;
       }
-    });
+
+      let queue = JSON.parse(localStorage.getItem(queueKey)) || [];
+      if (!queue.length) return;
+
+      document.getElementById("status").innerText = "Synchronisiere Dateien...";
+      document.getElementById("progressBar").style.display = "block";
+
+      let uploaded = 0;
+      const total = queue.length;
+
+      queue.forEach((item, index) => {
+        setTimeout(() => {
+          // Hier würde der Upload an dein Backend/API erfolgen.
+          uploaded++;
+          document.getElementById("progressBar").value = (uploaded / total) * 100;
+
+          if (uploaded === total) {
+            localStorage.removeItem(queueKey);
+            document.getElementById("status").innerText = "Alle Dateien hochgeladen!";
+            document.getElementById("progressBar").style.display = "none";
+          }
+        }, 500 * index); // Simulierter Upload
+      });
+    }
+
+    window.addEventListener("online", tryAutoUpload);
   </script>
+
 </body>
 </html>
