@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>YOLO Balkan-Scanner</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+  <style>
+    body {
+      background: #111;
+      color: #0f0;
+      font-family: monospace;
+      padding: 2em;
+    }
+    canvas, video, img {
+      max-width: 90%;
+      margin-top: 1em;
+      border: 2px solid #0f0;
+    }
+    .result {
+      margin-top: 1em;
+      background: #222;
+      padding: 1em;
+      border-radius: 8px;
+    }
+    .brudaa-btn {
+      background: #0f0;
+      color: #111;
+      border: none;
+      padding: 1em;
+      font-size: 1.2em;
+      cursor: pointer;
+      border-radius: 10px;
+      margin-top: 1em;
+    }
+  </style>
+</head>
+<body>
+  <h1>YOLO Balkan Offline</h1>
+
+  <input type="file" id="inputImage" accept="image/*" />
+  <button class="brudaa-btn" onclick="detect()">Brudaa YOLO</button>
+
+  <div>
+    <img id="preview" src="" />
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <div class="result" id="result">Ergebnisse warten...</div>
+
+  <script>
+    let model;
+
+    cocoSsd.load().then(m => {
+      model = m;
+      document.getElementById("result").textContent = "YOLO ready, Brudaa!";
+    });
+
+    const preview = document.getElementById('preview');
+    const canvas = document.getElementById('canvas');
+    const resultBox = document.getElementById('result');
+
+    document.getElementById('inputImage').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        preview.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    async function detect() {
+      resultBox.textContent = "Analysiere...";
+      const img = document.getElementById('preview');
+      const predictions = await model.detect(img);
+
+      const ctx = canvas.getContext("2d");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+
+      predictions.forEach(pred => {
+        ctx.strokeStyle = "#0f0";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(...pred.bbox);
+        ctx.fillStyle = "#0f0";
+        ctx.fillText(pred.class, pred.bbox[0], pred.bbox[1] - 5);
+      });
+
+      resultBox.innerHTML = `<strong>Gefundene Objekte:</strong><br/>` +
+        predictions.map(p => `${p.class} (${Math.round(p.score * 100)}%)`).join('<br>');
+    }
+  </script>
+</body>
+</html>
